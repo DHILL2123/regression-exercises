@@ -1,14 +1,42 @@
-
 import os
-import pandas as pd
+import env
+import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder
+import os
+import pandas as pd 
+import numpy as np
+import env
 from sklearn.model_selection import train_test_split
+import sklearn
 
 X= ''
 y= ''
 target = ''
 train_test_split=''
+
+####### Split data #############
+def train_test_split(df):
+    x_train_and_validate, x_test = train_test_split(df, random_state=123)
+    x_train, x_validate = train_test_split(x_train_and_validate)
+    return x_train, x_validate, x_test, x_train_and_validate
+
+################# Data Scalers ##################
+def minmax_scaler(x_train, x_validate, x_test,):
+    ######## Min Max Scaler (range calculations)
+    scaler = sklearn.preprocessing.MinMaxScaler()
+    # Note that we only call .fit with the training data,
+    # but we use .transform to apply the scaling to all the data splits.
+    scaler.fit(x_train)
+    ### Apply to train, validate, and test
+    x_train_scaled = scaler.transform(x_train)
+    x_validate_scaled = scaler.transform(x_validate)
+    x_test_scaled = scaler.transform(x_test)
+    return x_train_scaled, x_validate_scaled, x_test_scaled
+
+
+
+
 #####  prep data titanic functions ####
 def clean_data(df):
     '''
@@ -158,12 +186,6 @@ def prep_telco(df):
     return df
 
 
-
-
-
-
-
-
 ###### Train Validate Test Split Functions #####
 
 def split_titanic_data(df_titanic):
@@ -215,6 +237,10 @@ def telco_train_validate_test_split(df, target, seed=123):
     return train, validate, test     
 
     #pass in original df as the aregument
+
+
+######### useful code references below ###### 
+
 
 ######## loops #######
 
@@ -343,3 +369,5 @@ model_list = []
 #                  labels = ('no coffee', 'coffee'))
 # ##crosstab##
 # pd.crosstab(df.actual, df.prediction)
+# Replace a whitespace sequence or empty with a NaN value and reassign this manipulation to df.
+#df = df.replace(r'^\s*$', np.nan, regex=True)
