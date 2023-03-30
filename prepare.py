@@ -35,6 +35,41 @@ def minmax_scaler(x_train, x_validate, x_test,):
     return x_train_scaled, x_validate_scaled, x_test_scaled
 
 
+########### Separate data to address outliers into above 75% and below 25% ###########
+########### Removing the top 25% and bottom 25% working with the 50% in the middle ########
+########### Wrapped code into a function #############
+#iqr = df['bathrooms'].quantile(0.75) - df['bathrooms'].quantile(0.25)
+#lower_bathroom_fence = df['bathrooms'].quantile(0.25) - (1.5*iqr)
+#upper_bathroom_fence = df['bathrooms'].quantile(0.75) + (1.5*iqr)
+#df[(df.bathrooms > lower_bathroom_fence) & (df.bathrooms < upper_bathroom_fence)].bathrooms.describe()
+
+#col_qs = {}
+#for col in cols:
+#   col_qs[col] = q1, q3 = df[col].quantile([0.25, 0.75])
+
+#col_qs['bedrooms'][0.25]
+
+
+def remove_outliers(df, col_list, k=1.5):
+    '''
+    remove outliers from a dataframe based on a list of columns
+    using the tukey method.
+    returns a single dataframe with outliers removed
+    '''
+    col_qs = {}
+    for col in col_list:
+        col_qs[col] = q1, q3 = df[col].quantile([0.25, 0.75])
+    for col in col_list:
+        iqr = col_qs[col][0.75] - col_qs[col][0.25]
+        lower_fence = col_qs[col][0.25] - (k*iqr)
+        upper_fence = col_qs[col][0.75] + (k*iqr)
+        print(type(lower_fence))
+        print(lower_fence)
+        df = df[(df[col] > lower_fence) & (df[col] < upper_fence)]
+    return df
+
+
+
 
 
 #####  prep data titanic functions ####
