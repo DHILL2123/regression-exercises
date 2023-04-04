@@ -57,7 +57,7 @@ def wrangle_zillow(df):
 
 ###### Zillow Prepare ######################################
 ####### Split data #########################################
-def train_test_split(df, random_stat=123):
+def train_test_split(df, random_state=123):
     x_train_and_validate, x_test = train_test_split(df, random_state=123)
     x_train, x_validate = train_test_split(x_train_and_validate)
     return x_train, x_validate, x_test, x_train_and_validate

@@ -232,7 +232,7 @@ def split_titanic_data(df_titanic):
     
     train_val, test = train_test_split(df_titanic, train_size=0.8, random_state=1349, stratify=df_titanic['survived'])
     
-    train, validate = train_test_split(train_val, train_size=0.7, random_state=1349, stratify=train_val['survived'])
+    train, validate = train_test_split(train_val, train_size=0.7, random_state=1349, stratify=df_titanic[' survived'])
     
     return train, validate, test
 
