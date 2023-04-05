@@ -55,6 +55,7 @@ def wrangle_zillow(df):
     df = df.fillna(0)
     return df
 
+
 ###### Zillow Prepare ######################################
 ####### Split data #########################################
 def train_test_split(df, random_state=123):
@@ -131,7 +132,7 @@ def get_student_data():
         # Return the dataframe to the calling code
         return df
 
-def wrangle_grades():
+def wrangle_grades(path):
     '''
     Read student_grades into a pandas DataFrame from mySQL,
     drop student_id column, replace whitespaces with NaN values,
@@ -324,3 +325,4 @@ def wrangle_zillow():
     train, validate, test = prepare_zillow(acquire_zillow())
     
     return train, validate, test
+
