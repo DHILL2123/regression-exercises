@@ -1,16 +1,12 @@
 import os
 import pandas as pd 
 import numpy as np
-import env
+from env import protocol, user, host, password, db
 from sklearn.model_selection import train_test_split
 import sklearn
 
 
-protocol = ' '
-db = ' '
-user =''
-password = ' '
-host = ' '
+
 mysqlcon = f"{protocol}://{user}:{password}@{host}/{db}"
 
 ######################## Zillow Data ###########
@@ -19,7 +15,7 @@ def get_connection(db, user, host, password, protocol):
    
 
 def get_zillow_data():
-    filename = "zillow_exc.csv"
+    filename = "zillow_exc_final_report.csv"
     mysqlcon=f"{protocol}://{user}:{password}@{host}/zillow"
 
     if os.path.isfile(filename):
@@ -28,16 +24,36 @@ def get_zillow_data():
         # read the SQL query into a dataframe
         df = pd.read_sql_query('''select bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, 
                                 taxvaluedollarcnt, yearbuilt, taxamount, fips, propertylandusetypeid,
-                                propertylandusedesc
+                                propertylandusedesc, storydesc, storytypeid,numberofstories,assessmentyear,regionidzip,regionidcounty
+                                , typeconstructiondesc, structuretaxvaluedollarcnt, typeconstructiontypeid, propertycountylandusecode,
+                                propertyzoningdesc,latitude,
+                                longitude, transactiondate
                                 from properties_2017
+                                left join predictions_2017
+                                using(id)
+                                left join typeconstructiontype
+                                using (typeconstructiontypeid)
                                 left join propertylandusetype
-                                using (propertylandusetypeid)''', mysqlcon)
+                                using (propertylandusetypeid)
+                                left join storytype
+                                using(storytypeid)
+                                where propertylandusedesc like 'Single Family%%' and transactiondate between '2017-01-01%%' and '2017-12-31%%'
+                                ''', mysqlcon)  
+        
+
+         # renaming column names to one's I like better
+        df = df.rename(columns = {'bedroomcnt':'bedrooms', 
+                              'bathroomcnt':'bathrooms', 
+                              'calculatedfinishedsquarefeet':'area',
+                              'taxvaluedollarcnt':'tax_value', 
+                              'yearbuilt':'year_built', 'regionidzip':'zipcode_id',
+                              'structuretaxvaluedollarcnt':"structure_taxvalue", 'regionidcounty':'county_id'})
 
         # Write that dataframe to disk for later. Called "caching" the data for later.
-        df.to_csv(filename)
+    df.to_csv(filename)
 
         # Return the dataframe to the calling code
-        return df
+    return df
 
 
 def wrangle_zillow(df):

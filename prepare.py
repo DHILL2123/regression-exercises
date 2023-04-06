@@ -1,12 +1,10 @@
 import os
-import env
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder
 import os
 import pandas as pd 
 import numpy as np
-import env
 from sklearn.model_selection import train_test_split
 import sklearn
 
